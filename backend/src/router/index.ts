@@ -32,7 +32,7 @@ const modules = [
     router: PostRouter,
   },
   {
-    path: "/notification",
+    path: "/notifications",
     router: NotificationRouter,
   },
   {
