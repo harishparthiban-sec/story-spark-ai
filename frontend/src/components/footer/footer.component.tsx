@@ -54,10 +54,12 @@ const FooterComponent = () => {
     { label: "Contributors", to: "/contributors" },
   ];
 
+
   const legalLinks = [
     { label: "Privacy Policy", to: "/privacy-policy" },
     { label: "Terms & Conditions", to: "/terms" },
     { label: "Guidelines", to: "/guidelines" },
+    { label: "Report a Bug", to: "/report-bug" },
   ];
 
   const socialLinks = [
@@ -273,21 +275,20 @@ const FooterComponent = () => {
           </div>
 
           <div className="flex items-center gap-2.5">
-            {legalLinks.map(({ label, to }, i) => (
-              <span key={to} className="flex items-center gap-2">
-                <Link
-                  to={to}
-                  className="text-slate-400/80 hover:text-blue-300"
-                >
-                  {label}
-                </Link>
-
-                {i < legalLinks.length - 1 && (
-                  <span className="text-white/[0.12]">|</span>
-                )}
-              </span>
-            ))}
+            {legalLinks
+              .filter((link) => link.label !== "Report a Bug")
+              .map(({ label, to }, i, filteredArray) => (
+                <span key={to} className="flex items-center gap-2">
+                  <Link to={to} className="text-slate-400/80 hover:text-blue-300">
+                    {label}
+                  </Link>
+                  {i < filteredArray.length - 1 && (
+                    <span className="text-white/[0.12]">|</span>
+                  )}
+                </span>
+              ))}
           </div>
+
         </div>
       </div>
     </footer>
