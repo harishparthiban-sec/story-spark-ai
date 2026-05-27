@@ -15,6 +15,7 @@ import HeroSectionComponent from "./components/hero/hero_section.component";
 import HomeComponent from "./components/home/home.component";
 import LoginComponent from "./components/login/login.component";
 import SignUpComponent from "./components/signup/signup.component";
+import ForgotPasswordComponent from "./components/login/forgot_password.component";
 import DashboardComponent from "./components/dashboard/dashboard.component";
 import RootLayout from "./components/layout/root_layout.component";
 import DashboardLayout from "./components/dashboard/dashboard_layout.component";
@@ -608,6 +609,14 @@ function App() {
           element={
             <RootLayout>
               <LoginComponent />
+            </RootLayout>
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            <RootLayout>
+              <ForgotPasswordComponent />
             </RootLayout>
           }
         />
