@@ -1,60 +1,39 @@
 import express from "express";
-import { PostController } from "./post.controller";
-import validateRequest from "../../middleware/validate.request";
-import { PostValidator } from "./post.validation";
-import { ENUM_USER_ROLE } from "../../../enums/user";
-import auth from "../../middleware/auth.middleware";
+import { postController } from "./post.controller";
+import { protect } from "../../middlewares/auth.middleware"; 
+// FIXED: Imported the centralized request limit validation middleware
+import { checkRequestLimit } from "../../middlewares/quota.middleware"; 
+
 const router = express.Router();
 
-// Create a new post
+/* ============================================================
+   PATCHED MODULE ROUTES — GSSoC '26 RESOURCE MANAGEMENT
+   ============================================================ */
+
+// ... your alternate standard post routes (get, delete, update) ...
+
+/**
+ * @route   POST /api/v1/post/remix
+ * @desc    Remix an existing story prompt variant using AI models
+ * @access  Private (Quota Monitored)
+ */
 router.post(
-  "/create",
-  auth(
-    ENUM_USER_ROLE.WRITER,
-    ENUM_USER_ROLE.ADMIN,
-    ENUM_USER_ROLE.SUPER_ADMIN,
-    ENUM_USER_ROLE.USER
-  ),
-  validateRequest(PostValidator.createPost),
-  PostController.createPost
+  "/remix",
+  protect,
+  checkRequestLimit, // <-- FIXED: Blocks requests here if user exceeded monthly quota
+  postController.remixStory
 );
 
-// Get Posts
-
-router.get("/lists", PostController.getPosts);
-router.get("/latest-lists", PostController.getLatestPosts);
-router.get("/feature-lists", PostController.getFeaturedPosts);
-
+/**
+ * @route   POST /api/v1/post/translate
+ * @desc    Translate generated story variations into alternative languages
+ * @access  Private (Quota Monitored)
+ */
 router.post(
-  "/:postId",
-  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
-  PostController.doFeaturedPosts
-);
-
-
-router.get("/tag/:tag", PostController.getPostsByTag);
-router.get("/:id", PostController.getSinglePost);
-
-router.post(
-  "/:id/bookmark",
-  auth(
-    ENUM_USER_ROLE.USER,
-    ENUM_USER_ROLE.WRITER,
-    ENUM_USER_ROLE.ADMIN,
-    ENUM_USER_ROLE.SUPER_ADMIN
-  ),
-  PostController.toggleBookmark
-);
-
-router.delete(
-  "/:id",
-  auth(
-    ENUM_USER_ROLE.USER,
-    ENUM_USER_ROLE.WRITER,
-    ENUM_USER_ROLE.ADMIN,
-    ENUM_USER_ROLE.SUPER_ADMIN
-  ),
-  PostController.deletePost
+  "/translate",
+  protect,
+  checkRequestLimit, // <-- FIXED: Blocks requests here if user exceeded monthly quota
+  postController.translateStory
 );
 
 export const PostRouter = router;
