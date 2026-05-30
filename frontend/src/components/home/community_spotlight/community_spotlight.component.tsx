@@ -56,71 +56,23 @@ const formatMetric = (value: number) =>
   new Intl.NumberFormat("en", { notation: "compact" }).format(value);
 
 const CommunitySpotlightComponent = () => {
-  const { data, isLoading, isError } = useGetLatestListsQuery(undefined);
+  const { data, isLoading, isError, refetch } = useGetLatestListsQuery(undefined);
   const navigate = useNavigate();
 
-  const topWriters = useMemo(() => {
-    const writers = new Map<string, Omit<SpotlightWriter, "engagementScore">>();
-
-    data?.posts?.forEach((post: Post) => {
-      if (!post.author) return;
-
-      const authorKey = post.author._id || post.author.email || post.author.name;
-      const existingWriter = writers.get(authorKey);
-      const postScore = getPostEngagementScore(post);
-
-      if (!existingWriter) {
-        writers.set(authorKey, {
-          author: post.author,
-          storiesCount: 1,
-          likesCount: post.likesCount ?? 0,
-          commentsCount: post.commentsCount ?? 0,
-          viewsCount: post.viewsCount ?? 0,
-          bookmarksCount: getBookmarkCount(post),
-          topPost: post,
-        });
-
-        return;
-      }
-
-      existingWriter.storiesCount += 1;
-      existingWriter.likesCount += post.likesCount ?? 0;
-      existingWriter.commentsCount += post.commentsCount ?? 0;
-      existingWriter.viewsCount += post.viewsCount ?? 0;
-      existingWriter.bookmarksCount += getBookmarkCount(post);
-
-      if (postScore > getPostEngagementScore(existingWriter.topPost)) {
-        existingWriter.topPost = post;
-      }
-    });
-
-    return Array.from(writers.values())
-      .map((writer) => ({
-        ...writer,
-        engagementScore: getWriterEngagementScore(writer),
-      }))
-      .sort((a, b) => b.engagementScore - a.engagementScore)
-      .slice(0, TOP_WRITERS_LIMIT);
-  }, [data?.posts]);
-
-  if (isLoading) {
-    return <LoadingAnimation />;
-  }
-
+  if (isLoading) return <LoadingAnimation />;
   if (isError) {
     return (
-      <section className="px-5 py-10">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-slate-900 dark:text-gray-200">
-            Community Spotlight
-          </h2>
-          <p className="mt-2 text-slate-600 dark:text-gray-400">
-            Top contributors loved by the Story Spark community
-          </p>
-        </div>
-
-        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-5 text-red-700 dark:border-red-900/70 dark:bg-red-900/20 dark:text-red-400">
-          Failed to load community spotlight writers. Please try again later.
+      <section className="story-section">
+        <div className="story-page-shell">
+          <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-10 text-center text-red-200">
+            <p className="mb-3 font-semibold">Failed to load spotlight stories.</p>
+            <button
+              onClick={() => refetch()}
+              className="rounded bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
+            >
+              Try Again
+            </button>
+          </div>
         </div>
       </section>
     );

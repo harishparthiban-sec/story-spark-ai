@@ -73,12 +73,7 @@ const RecommendedWritersComponent = () => {
                   </p>
                 </div>
               </div>
-
-              <button
-                onClick={() => toggleFollow(index, writer.id)}
-                disabled={isLoading}
-                className="text-indigo-600 text-sm font-medium hover:text-indigo-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-              >
+              <button disabled={isLoading} onClick={() => toggleFollow(index, writer.id)} className="motion-cta rounded-full px-3 py-1.5 text-sm text-white font-semibold disabled:opacity-50">
                 {following.includes(index) ? "Following" : "Follow"}
               </button>
             </div>
