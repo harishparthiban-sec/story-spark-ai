@@ -5,10 +5,6 @@ import StoryInspirationWrapper from "./components/StoryInspirationWrapper";
 import WritingAssistantComponent from "./components/writing-assistant/writing_assistant.component";
 import CollabHome from "./components/collab/CollabHome";
 import CollabRoom from "./components/collab/CollabRoom";
-import StoriesComponent from "./components/stories/stories.component";
-
-
-
 import HeroSectionComponent from "./components/hero/hero_section.component";
 import HomeComponent from "./components/home/home.component";
 import LoginComponent from "./components/login/login.component";
@@ -47,7 +43,7 @@ import ContributorsComponent from "./components/footer/contributors";
 import ReportBug from "./components/report-bug/ReportBug";
 import AnalyticsPage from "./components/dashboard/analytics/analytics.page";
 import StoryWorkspace from "./components/story/StoryWorkspace";
-import UserListComponent from "./components/dashboard/users/user.list.component";
+import StoriesComponent from "./components/stories/stories.component";
 
 type ProtectedRouteProps = {
   allowedRoles: string[];
@@ -61,9 +57,6 @@ const ProtectedRoute = ({ allowedRoles, element }: ProtectedRouteProps) => {
   return element ?? <Outlet />;
 };
 
-// =========================================================================
-// CENTRAL ROUTER MATRIX
-// =========================================================================
 const ALL_ROLES = [USER_ROLE.ADMIN, USER_ROLE.SUPER_ADMIN, USER_ROLE.WRITER, USER_ROLE.USER];
 
 const router = createBrowserRouter([
@@ -71,7 +64,6 @@ const router = createBrowserRouter([
     path: "/",
     element: (
       <>
-        <MagicCursorComponent />
         <ScrollToTop />
         <RootLayout>
           <Outlet />
@@ -84,6 +76,7 @@ const router = createBrowserRouter([
       { path: "writing-assistant", element: <WritingAssistantComponent /> },
       { path: "story-inspiration", element: <StoryInspirationWrapper /> },
       { path: "stories", element: <StoriesComponent /> },
+      { path: "story-workspace", element: <StoryWorkspace /> },
       { path: "login", element: <LoginComponent /> },
       { path: "signup", element: <SignUpComponent /> },
       { path: "pricing", element: <PricingComponent /> },
@@ -115,7 +108,6 @@ const router = createBrowserRouter([
   },
   { path: "/auth/email-validation", element: <EmailValidationComponent /> },
   { path: "/payment", element: <PaymentComponent /> },
-  { path: "/analytics", element: <AnalyticsPage /> },
   { path: "/collab", element: <CollabHome /> },
   { path: "/collab/:roomId", element: <CollabRoom /> },
   {
