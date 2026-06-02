@@ -85,7 +85,7 @@ interface StoriesComponentProps {
 }
 
 interface IRelatedStoriesComponentProps {
-  posts: any[];
+  posts: { _id: string; title: string; [key: string]: unknown }[];
   currentPostId: string;
 }
 
@@ -466,12 +466,13 @@ const StoriesViewComponent: React.FC<StoriesComponentProps> = ({
 
       setEndingsCache((prev) => ({ ...prev, [selectedStory.uuid]: res.data }));
       toast.success("Alternate endings generated successfully!");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("[StoriesView Alternate Ending Flow Failure]:", err);
-      const errorStatus = err?.status || err?.data?.status;
+      const errObj = err as Record<string, unknown>;
+      const errorStatus = (errObj?.status as number | undefined) || ((errObj?.data as Record<string, unknown>)?.status as number | undefined);
       setError(
         errorStatus
-          ? getErrorMessage(new ApiError(errorStatus, err?.data?.message || ""))
+          ? getErrorMessage(new ApiError(errorStatus, ((errObj?.data as Record<string, unknown>)?.message as string) || ""))
           : getErrorMessage(err)
       );
       toast.error("Failed to generate alternate endings.");
