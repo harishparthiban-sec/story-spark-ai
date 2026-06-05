@@ -12,7 +12,10 @@ const toggleBookmark = async (storyId: string, token: ITokenPayload) => {
   if (!user) {
     throw new ApiError(httpStatus.BAD_REQUEST, "User not found!");
   }
-  const post = await Post.findById(storyId);
+  const post = await Post.findOne({
+    _id: storyId,
+    isDeleted: { $ne: true },
+  });
   if (!post) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Story not found!");
   }
@@ -66,10 +69,46 @@ const getBookmarks = async (
 
   const skip = (page - 1) * limit;
 
-  // Find user's bookmarks
-  const bookmarks = await Bookmark.find({ userId: user._id })
-    .skip(skip)
-    .limit(limit)
+  // Count total bookmarks pointing to non-deleted stories
+  const totalAgg = await Bookmark.aggregate([
+    { $match: { userId: user._id } },
+    {
+      $lookup: {
+        from: "posts",
+        localField: "storyId",
+        foreignField: "_id",
+        as: "story",
+      },
+    },
+    { $unwind: "$story" },
+    { $match: { "story.isDeleted": { $ne: true } } },
+    { $count: "count" }
+  ]);
+  const total = totalAgg[0]?.count || 0;
+
+  // Retrieve paginated active bookmark IDs
+  const activeBookmarkDocs = await Bookmark.aggregate([
+    { $match: { userId: user._id } },
+    {
+      $lookup: {
+        from: "posts",
+        localField: "storyId",
+        foreignField: "_id",
+        as: "story",
+      },
+    },
+    { $unwind: "$story" },
+    { $match: { "story.isDeleted": { $ne: true } } },
+    { $sort: { createdAt: -1 } },
+    { $skip: skip },
+    { $limit: limit },
+    { $project: { _id: 1 } },
+  ]);
+
+  const activeBookmarkIds = activeBookmarkDocs.map((doc) => doc._id);
+
+  // Fetch full details and populate nested paths
+  const bookmarks = await Bookmark.find({ _id: { $in: activeBookmarkIds } })
     .populate({
       path: "storyId",
       populate: [
@@ -82,7 +121,13 @@ const getBookmarks = async (
       ],
     });
 
-  const total = await Bookmark.countDocuments({ userId: user._id });
+  // Maintain the sorted order from aggregation
+  const activeBookmarkIdStrings = activeBookmarkIds.map((id) => id.toString());
+  bookmarks.sort(
+    (a, b) =>
+      activeBookmarkIdStrings.indexOf(a._id.toString()) -
+      activeBookmarkIdStrings.indexOf(b._id.toString())
+  );
 
   // Map to extract only the fully populated story objects, filtering out any orphaned references
   const bookmarkedStories = bookmarks

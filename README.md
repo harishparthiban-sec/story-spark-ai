@@ -29,6 +29,7 @@
 - [Environment variables](#environment-variables)
 - [Contributing 👨‍💻](#contributing-)
 - [Contributors 🤝](#contributors-)
+- [Maintainers](#maintainers)
 - [License](#license)
 - [Support 🙏](#support-)
 
@@ -75,7 +76,18 @@
 
    > Never commit `backend/.env` or `frontend/.env`. Only `.env.example` files belong in git.
 
-4. **Run apps**
+4. **First-Time Setup (Admin Seeding)**
+
+   Before starting the server for the first time, you must create an admin user:
+   
+   ```bash
+   cd backend
+   npx ts-node scripts/seed-admin.ts
+   ```
+   
+   Make sure `ADMIN_EMAIL` and `ADMIN_PASSWORD` are set in your `backend/.env` file.
+
+5. **Run apps**
 
    - **Both** (two terminals or one combined process):
 
@@ -86,13 +98,30 @@
    - **Backend only:** `npm run dev:backend` — API (default port **5000** if `PORT` is unset).
    - **Frontend only:** `npm run dev:frontend` — Vite dev server on **http://localhost:4001**
 
-5. **Production builds**
+6. **Production builds**
 
    ```bash
    npm run build
    npm run start:backend    # requires `npm run build:backend` first
    npm run start:frontend   # serves built static app (preview)
    ```
+
+### Deploying on Vercel
+
+Use **two** Vercel projects from this monorepo:
+
+| Project | Root directory | Example domain |
+|---------|----------------|----------------|
+| Frontend | `frontend` | `storysparkai.vercel.app` |
+| Backend API | `backend` | `apistorysparkai.vercel.app` |
+
+**Frontend environment variables** (redeploy after changing):
+
+- `VITE_BASE_URL` = `https://<your-api>.vercel.app/api/v1`
+- `VITE_SOCKET_URL` = `https://notification-socket-io.onrender.com` (or your own persistent Node host)
+- Do **not** point `VITE_SOCKET_URL` at your Vercel API URL — Vercel serverless cannot run Socket.IO, which causes endless `/socket.io/` **404** logs.
+
+**Backend environment variables:** set `DATABASE_URL`, JWT secrets, AI keys, and `CORS_ORIGINS` including `https://storysparkai.vercel.app`.
 
 **Git:** Use a **single** repository root (one `.git` folder). Do not nest another `.git` inside `frontend/` or `backend/`.
 
@@ -114,7 +143,7 @@ cp frontend/.env.example frontend/.env
 | `DATABASE_URL` | Yes | MongoDB connection string (local or [Atlas](https://www.mongodb.com/cloud/atlas)) |
 | `PORT` | No | API port (default `5000`) |
 | `NODE_ENV` | No | `development` or `production` |
-| `CORS_ORIGINS` | No | Comma-separated frontend URLs (e.g. `http://localhost:4001`) |
+| `CORS_ORIGINS` | No | Comma-separated frontend URLs allowed for CORS requests (e.g. `http://localhost:4001`) |
 | `SALT_ROUNDS` | Yes | Bcrypt cost factor (e.g. `10`) |
 | `JWT_SECRET` | Yes | Access token signing secret |
 | `JWT_REFRESH_SECRET` | Yes | Refresh token signing secret |
@@ -127,6 +156,7 @@ cp frontend/.env.example frontend/.env
 | `UNSPLASH_KEY_API_SECRET` | For images | Unsplash secret |
 | `VERIFY_EMAIL` | For email | SMTP sender address |
 | `VERIFY_PASSWORD` | For email | SMTP password or app password |
+| `GOOGLE_CLIENT_ID` | For login with google | https://console.cloud.google.com |
 
 #### Frontend (`frontend/.env`)
 
@@ -134,12 +164,14 @@ cp frontend/.env.example frontend/.env
 |----------|----------|-------------|
 | `VITE_BASE_URL` | Yes | API base URL, e.g. `http://localhost:5000/api/v1` |
 | `VITE_SOCKET_URL` | No | Socket.IO URL for real-time notifications (optional) |
+| `VITE_GOOGLE_CLIENT_ID` | Yes | https://console.cloud.google.com |
 
 ### Contributing workflow
 
 1. Fork the repository and clone your fork.
 2. Create a branch: `git checkout -b your-feature-branch`
 3. Install with `npm install` at the repo root, configure `.env` files, then `git add`, `git commit`, `git push`, and open a pull request.
+
 
 
 <a id="contributing"></a>
@@ -153,57 +185,39 @@ Contributions make the open source community such an amazing place to learn, ins
 
 ## Contributors 🤝
 
-<!-- CONTRIBUTORS:START -->
-Thanks to everyone who has helped build **Story Spark AI**. This section updates automatically when `contributors.json` changes. Merges entries from `contributors.json` with [GitHub contributors](https://github.com/ronisarkarexe/story-spark-ai/graphs/contributors).
+Thanks to everyone who has helped build **Story Spark AI**. This grid updates automatically from [GitHub contributors](https://github.com/ronisarkarexe/story-spark-ai/graphs/contributors).
+
+<a href="https://github.com/ronisarkarexe/story-spark-ai/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=ronisarkarexe/story-spark-ai&max=500&columns=12" alt="Contributors" />
+</a>
+
+## Maintainers
 
 <table>
   <tr>
     <td align="center">
       <a href="https://github.com/ronisarkarexe">
-        <img src="https://github.com/ronisarkarexe.png" width="100" alt="ronisarkarexe" />
-        <br />
-        <sub><b>Roni Sarkar</b></sub>
+        <img src="https://github.com/ronisarkarexe.png" width="120" height="120" alt="Roni Sarkar" style="border-radius: 6px; object-fit: cover;" />
       </a>
+      <br /><br />
+      <strong>Roni Sarkar</strong>
       <br />
-      <sub>Maintainer</sub>
-    </td>
-    <td align="center">
-      <a href="https://github.com/mzl2233">
-        <img src="https://github.com/mzl2233.png" width="100" alt="mzl2233" />
-        <br />
-        <sub><b>mzl2233</b></sub>
+      <sub>Project Maintainer · <a href="https://github.com/ronisarkarexe">@ronisarkarexe</a></sub>
+      <br /><br />
+      <a href="https://github.com/ronisarkarexe" title="GitHub">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" width="28" height="28" alt="GitHub" />
       </a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/amrendrasharma1328-a11y">
-        <img src="https://github.com/amrendrasharma1328-a11y.png" width="100" alt="amrendrasharma1328-a11y" />
-        <br />
-        <sub><b>amrendrasharma1328-a11y</b></sub>
+      &nbsp;
+      <a href="https://www.linkedin.com/in/ronisarkarexe" title="LinkedIn">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" width="28" height="28" alt="LinkedIn" />
       </a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/Swetanegi05">
-        <img src="https://github.com/Swetanegi05.png" width="100" alt="Swetanegi05" />
-        <br />
-        <sub><b>Swetanegi05</b></sub>
+      &nbsp;
+      <a href="https://x.com/ronisarkar_exe" title="X (Twitter)">
+        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/x.svg" width="28" height="28" alt="X" />
       </a>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <a href="https://github.com/rajdeep-yadav">
-        <img src="https://github.com/rajdeep-yadav.png" width="100" alt="rajdeep-yadav" />
-        <br />
-        <sub><b>Rajdeep</b></sub>
-      </a>
-    </td>
-    <td align="center">
-      <sub><b>P. Harshini Padmavathi</b></sub>
     </td>
   </tr>
 </table>
-
-<!-- CONTRIBUTORS:END -->
 
 <a id="license"></a>
 
