@@ -17,7 +17,7 @@ import { GamificationService } from "../gamification/gamification.service";
 
 const MAX_SEARCH_TERM_LENGTH = 100;
 const escapeRegex = (text: string): string => {
-  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+  return text.replace(/[-[\]{}()*+?.,\^$|#\s]/g, "\$&");
 };
 
 interface ICursorPayload {
@@ -396,7 +396,12 @@ const toggleBookmark = async (postId: string, token: ITokenPayload) => {
     throw new ApiError(httpStatus.BAD_REQUEST, "User not found!");
   }
 
-  const post = await Post.findOne({ _id: postId, isDeleted: { $ne: true } });
+  // ✅ FIXED
+const postExists = await Post.exists({ _id: postId, isDeleted: { $ne: true } });
+if (!postExists) {
+  throw new ApiError(httpStatus.BAD_REQUEST, "Post not found!");
+}
+const post = await Post.findOne({ _id: postId, isDeleted: { $ne: true } });
 
   if (!post) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Post not found!");
