@@ -18,7 +18,7 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const itemVariants: any = {
   hidden: { opacity: 0, y: 20 },
   visible: { 
     opacity: 1, 
@@ -67,6 +67,7 @@ interface Feature {
   bgClass: string;
   icon: ReactNode;
 } 
+}
 
 const FeatureCard = ({ feature }: { feature: Feature }) => {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -348,8 +349,12 @@ const HeroSectionComponent = () => {
           </div>
         </div>
       </div>
+          </div>
 
-      <motion.div variants={itemVariants} className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 sm:pb-28 w-full box-border">
+            <motion.div
+        variants={itemVariants}
+        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 sm:pb-28 w-full box-border"
+      >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 lg:gap-8 w-full box-border">
           {features.map((feature, index) => (
             <FeatureCard feature={feature} key={index} />
