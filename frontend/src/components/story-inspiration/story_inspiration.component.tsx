@@ -82,8 +82,8 @@ const StoryInspirationComponent: React.FC = () => {
           <button
             onClick={() => navigate("/")}
             className="
-              group inline-flex items-center gap-3
-              px-5 py-3 rounded-2xl
+              group inline-flex items-center gap-2
+              px-4 py-2 rounded-xl
               bg-white/70 dark:bg-white/[0.05]
               border border-white/60 dark:border-white/10
               backdrop-blur-xl
@@ -93,19 +93,13 @@ const StoryInspirationComponent: React.FC = () => {
               transition-all duration-300
             "
           >
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-500 flex items-center justify-center text-white shadow-lg">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-500 flex items-center justify-center text-white shadow-lg">
               <i className="fas fa-arrow-left text-sm group-hover:-translate-x-0.5 transition-transform" />
             </div>
 
-            <div className="text-left">
-              <p className="text-sm font-semibold text-slate-800 dark:text-white">
-                Back to Home
-              </p>
-
-              <p className="text-xs text-slate-600 dark:text-slate-300">
-                Return to homepage
-              </p>
-            </div>
+            <span className="text-sm font-medium text-slate-800 dark:text-white">
+  Back to Home
+</span>
           </button>
 
           <div className="hidden md:flex items-center gap-3 px-4 py-2 rounded-full bg-white/70 dark:bg-white/[0.04] border border-white/60 dark:border-white/10 backdrop-blur-xl">
