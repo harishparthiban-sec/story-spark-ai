@@ -19,6 +19,7 @@ type Inputs = {
 
 const MAX_PROMPT_LENGTH = 2000;
 const WARN_THRESHOLD = 0.85;
+const lengths = ["short", "medium", "long"] as const;
 
 const StoriesComponent = () => {
   const location = useLocation();
@@ -28,6 +29,7 @@ const { register, handleSubmit, reset, setValue } = useForm<Inputs>();
   const [loading, setLoading] = useState<boolean>(false);
   const { data } = useGetProfileInfoQuery(undefined);
   const userRole = getUserInfo();
+  const subscriptionType = (userRole?.subscriptionType as string) || "free";
   const login = isLoggedIn();
   const [generateModel] = useGenerateModelMutation();
   const [generateFreeModel] = useGenerateFreeModelMutation();
@@ -166,7 +168,7 @@ const handleClearPrompt = () => {
   hasStory: stories.length > 0,
 });
   return (
-    <div className="bg-gradient-to-br animate-gradient-slow min-h-screen">
+    <div className="bg-gradient-to-br animate-gradient-slow min-h-screen relative overflow-x-hidden">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-6 flex flex-col md:flex-row items-center md:items-start justify-between gap-4">
           <div className="pt-2 w-full md:w-auto flex justify-start">
@@ -181,13 +183,7 @@ const handleClearPrompt = () => {
             <div className="pt-2 text-center">
               <div className="!rounded-button bg-gradient-to-r from-white/20 to-white/10 text-gray-400 px-3 py-2 flex items-center gap-2 transition-all duration-300 rounded text-sm whitespace-normal md:whitespace-nowrap leading-relaxed">
                 <span>
-                  Free access for 3 requests —{" "}
-                  <Link to="/login">
-                    <span className="text-indigo-400 underline font-semibold">
-                      Login
-                    </span>
-                  </Link>{" "}
-                  for more!
+                  Free access for 3 requests — <Link to="/login"><span className="text-indigo-400 underline font-semibold">Login</span></Link> for more!
                 </span>
               </div>
             </div>
@@ -196,9 +192,8 @@ const handleClearPrompt = () => {
           <div className="flex flex-col items-center md:items-end pt-2 w-full md:w-auto">
             <button className="!rounded-button bg-gradient-to-r from-white/20 to-white/10 hover:from-white/30 hover:to-white/20 text-gray-300 px-3 py-2 flex items-center gap-2 transition-all duration-300 rounded whitespace-nowrap">
               <span>
-                {" "}
-                <span className="text-gray-400 text-xs">Per Month</span>{" "}
-                {getRequestLimit(userRole?.subscriptionType as string)}
+                <span className="text-gray-400 text-xs mr-1">Per Month</span>
+                {getRequestLimit(subscriptionType)}
               </span>
               <Link to="/pricing" className="border-1 border-white/20 pl-2 text-gray-300">
                Upgrade
@@ -258,10 +253,10 @@ const handleClearPrompt = () => {
       ))}
     </div>
 
-    <div className="flex items-center gap-2 mb-3">
+    <div className="flex flex-wrap items-center gap-2 mb-3">
       <span className="text-xs text-gray-400 mr-1">📏 Length:</span>
 
-      {(["short", "medium", "long"] as const).map((length) => (
+      {lengths.map((length) => (
         <button
           key={length}
           type="button"
@@ -376,7 +371,7 @@ const handleClearPrompt = () => {
       <button
         type="submit"
         disabled={loading || isOverLimit}
-        className={`rounded-lg bg-gradient-to-r from-blue-400 to-indigo-500 text-gray-200 px-6 py-3 font-semibold ${
+        className={`w-full sm:w-auto justify-center rounded-lg bg-gradient-to-r from-blue-400 to-indigo-500 text-gray-200 px-6 py-3 font-semibold ${
           loading || isOverLimit
             ? "opacity-50 cursor-not-allowed"
             : "hover:shadow-lg hover:shadow-indigo-500/50"

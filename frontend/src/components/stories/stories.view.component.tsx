@@ -214,28 +214,28 @@ useEffect(() => {
             <div className="absolute top-[-50px] right-[-50px] w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
             <div className="absolute bottom-[-50px] left-[-50px] w-48 h-48 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
             
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
               <h3 className="text-xl font-bold text-slate-200 relative z-10">
                 Generated Story
               </h3>
-              <div className="flex items-center gap-2 relative z-10">
+              <div className="flex flex-wrap items-center gap-2 relative z-10 w-full sm:w-auto">
                 <button
                   type="button"
-                  className="rounded-lg px-4 py-2 bg-slate-700 text-slate-200 font-semibold cursor-pointer hover:bg-slate-600 transition-colors"
+                  className="flex-1 sm:flex-initial text-center whitespace-nowrap rounded-lg px-4 py-2 bg-slate-700 text-slate-200 font-semibold cursor-pointer hover:bg-slate-600 transition-colors"
                   onClick={handleCopyStory}
                 >
                   {isCopied ? "✓ Copied" : "📋 Copy"}
                 </button>
                 <button
                   type="button"
-                  className="rounded-lg px-4 py-2 bg-purple-700 text-slate-200 font-semibold cursor-pointer hover:bg-purple-600 transition-colors"
+                  className="flex-1 sm:flex-initial text-center whitespace-nowrap rounded-lg px-4 py-2 bg-purple-700 text-slate-200 font-semibold cursor-pointer hover:bg-purple-600 transition-colors"
                   onClick={handleExportPDF}
                 >
                   📄 Export PDF
                 </button>
                 <button
                   type="button"
-                  className={`rounded-lg px-5 py-2 font-semibold flex items-center space-x-2 cursor-pointer bg-blue-600 text-white transition-all duration-200 ${
+                  className={`flex-1 sm:flex-initial justify-center text-center whitespace-nowrap rounded-lg px-5 py-2 font-semibold flex items-center space-x-2 cursor-pointer bg-blue-600 text-white transition-all duration-200 ${
                     loading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-500 hover:shadow-lg active:scale-95"
                   }`}
                   onClick={handelPublishStory}
