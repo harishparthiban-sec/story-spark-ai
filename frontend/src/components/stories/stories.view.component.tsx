@@ -1,4 +1,5 @@
 import CharacterProfileCard from "./CharacterProfileCard";
+import StoryMoodDashboard from "./StoryMoodDashboard";
 import { CharacterProfile } from "./stories.utils";
 import { getShortenedText, ITopicData, topicsData } from "./stories.utils";
 import React, { useEffect, useState, useRef, useMemo } from "react";
@@ -1888,6 +1889,8 @@ const handleGenerateCharacterProfile = async () => {
             )}
           </div>
         </div>
+
+        
 
         {/* ── Right Column: Preview Panel ── */}
         <div className="col-span-1 lg:col-span-4 w-full box-border lg:sticky lg:top-6">
